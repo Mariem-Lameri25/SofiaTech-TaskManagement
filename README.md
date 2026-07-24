@@ -152,7 +152,7 @@ ng serve
 
 | Metric | Value |
 |--------|-------|
-| **Duration** | 3 months (May-August 2024) |
+| **Duration** | 2 months (July-August 2024) |
 | **Releases** | 3 complete releases |
 | **Lines of Code** | ~8,000+ (backend + frontend) |
 | **Test Coverage** | Unit tests for critical components |
@@ -190,23 +190,12 @@ Through this project, I gained:
 
 ---
 
-## 📚 What I Learned About Cloud & DevOps
-
-This internship prepared me for cloud-native development:
-- Understanding of microservices architecture principles
-- Containerization concepts (foundation for Docker/Kubernetes)
-- Scalability & performance optimization
-- API design for distributed systems
-
----
-
 ## 🤝 Team & Supervision
 
 **Internship Details:**
 - **Company**: SofiaTech, Tunisia
 - **Department**: Software Engineering
-- **Duration**: May - August 2024
-- **Team Size**: 3-5 developers (Agile team)
+- **Duration**: July - August 2024
 - **Supervisor**: Professional guidance & mentorship
 
 ---
