@@ -1,0 +1,308 @@
+<div class="table-container">
+  <div class="header">
+    <h2>User Management</h2>
+    <p>Admin interface to manage users</p>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="controls">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchOrFilterChange()"
+      placeholder="Search by name, email, phone, or role..."
+      class="search-input"
+    />
+    <select 
+      [(ngModel)]="roleFilter" 
+      (ngModelChange)="onSearchOrFilterChange()"
+      class="role-filter"
+    >
+      <option value="">All Roles</option>
+      <option value="ADMIN">ADMIN</option>
+      <option value="MANAGER">MANAGER</option>
+      <option value="USER">USER</option>
+    </select>
+    <button class="add-user-button" (click)="openAddUserModal()">+ Add User</button>
+  </div>
+
+ <!-- MODALE AJOUT UTILISATEUR - Enhanced Version -->
+ <div class="modal" *ngIf="showAddUserModal">
+  <div class="modal-content">
+    <span class="close" (click)="showAddUserModal = false">&times;</span>
+
+    <h3>Ajouter un nouvel utilisateur</h3>
+    <form (ngSubmit)="addUser()" #addUserForm="ngForm">
+
+      <div class="form-group">
+        <label for="firstname">Prénom *</label>
+        <input 
+          id="firstname"
+          [(ngModel)]="newUser.firstname" 
+          name="firstname" 
+          placeholder="Entrez le prénom" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastname">Nom *</label>
+        <input 
+          id="lastname"
+          [(ngModel)]="newUser.lastname" 
+          name="lastname" 
+          placeholder="Entrez le nom de famille" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          id="email"
+          [(ngModel)]="newUser.email" 
+          name="email" 
+          type="email"
+          placeholder="exemple@email.com" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Numéro de téléphone *</label>
+        <input 
+          id="phoneNumber"
+          [(ngModel)]="newUser.phoneNumber" 
+          name="phoneNumber" 
+          placeholder="Entrez le numéro de téléphone" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe *</label>
+        <input 
+          id="password"
+          [(ngModel)]="newUser.password" 
+          name="password" 
+          type="password"
+          placeholder="Entrez le mot de passe" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Rôle *</label>
+        <select 
+          id="role"
+          [(ngModel)]="newUser.role" 
+          name="role" 
+          required>
+          <option [ngValue]="undefined" disabled>Choisir un rôle</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="MANAGER">MANAGER</option>
+          <option value="USER">USER</option>
+        </select>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="showAddUserModal = false" class="cancel-btn">
+          Annuler
+        </button>
+        <button type="submit" class="submit-btn">
+          Ajouter l'utilisateur
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- MODALE ÉDITION UTILISATEUR - Enhanced Version -->
+<div class="modal" *ngIf="editUserModalVisible">
+  <div class="modal-content">
+    <span class="close" (click)="editUserModalVisible = false">&times;</span>
+
+    <h3>Modifier l'utilisateur</h3>
+    <form (ngSubmit)="updateUser()" #editUserForm="ngForm">
+
+      <div class="form-group">
+        <label for="editFirstname">Prénom *</label>
+        <input 
+          id="editFirstname"
+          [(ngModel)]="selectedUserToEdit.firstname" 
+          name="editFirstname" 
+          placeholder="Entrez le prénom" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="editLastname">Nom *</label>
+        <input 
+          id="editLastname"
+          [(ngModel)]="selectedUserToEdit.lastname" 
+          name="editLastname" 
+          placeholder="Entrez le nom de famille" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="editEmail">Email *</label>
+        <input 
+          id="editEmail"
+          [(ngModel)]="selectedUserToEdit.email" 
+          name="editEmail" 
+          type="email"
+          placeholder="exemple@email.com" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="editPhoneNumber">Numéro de téléphone *</label>
+        <input 
+          id="editPhoneNumber"
+          [(ngModel)]="selectedUserToEdit.phoneNumber" 
+          name="editPhoneNumber" 
+          placeholder="Entrez le numéro de téléphone" 
+          required>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="editRole">Rôle *</label>
+        <select 
+          id="editRole"
+          [(ngModel)]="selectedUserToEdit.role" 
+          name="editRole" 
+          required>
+          <option [ngValue]="undefined" disabled>Choisir un rôle</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="MANAGER">MANAGER</option>
+          <option value="USER">USER</option>
+        </select>
+        <div class="input-effect"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="editUserModalVisible = false" class="cancel-btn">
+          Annuler
+        </button>
+        <button type="submit" class="submit-btn">
+          Mettre à jour
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+  <!-- TABLE DES UTILISATEURS -->
+   <table class="user-table">
+    <thead>
+      <tr>
+        <th>Avatar</th>
+        <th>
+          <a href="#" (click)="onSortChange('firstname'); $event.preventDefault()" class="sortable">
+            First Name
+            <span *ngIf="sortBy === 'firstname'">
+              <i class="fa" [ngClass]="sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down'"></i>
+            </span>
+          </a>
+        </th>
+        <th>
+          <a href="#" (click)="onSortChange('lastname'); $event.preventDefault()" class="sortable">
+            Last Name
+            <span *ngIf="sortBy === 'lastname'">
+              <i class="fa" [ngClass]="sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down'"></i>
+            </span>
+          </a>
+        </th>
+        <th>
+          <a href="#" (click)="onSortChange('email'); $event.preventDefault()" class="sortable">
+            Email
+            <span *ngIf="sortBy === 'email'">
+              <i class="fa" [ngClass]="sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down'"></i>
+            </span>
+          </a>
+        </th>
+        <th>Phone</th>
+        <th>
+          <a href="#" (click)="onSortChange('role'); $event.preventDefault()" class="sortable">
+            Role
+            <span *ngIf="sortBy === 'role'">
+              <i class="fa" [ngClass]="sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down'"></i>
+            </span>
+          </a>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+
+      <!-- utilisateurs (pagination backend) -->
+      <tr *ngFor="let user of users">
+        <td>
+          <img [src]="user.avatar || 'assets/default-avatar.png'" class="avatar" />
+        </td>
+        <td>{{ user.firstname }}</td>
+        <td>{{ user.lastname }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phoneNumber }}</td>
+        <td>{{ user.role || 'N/A' }}</td>
+        <td>
+          <div class="action-buttons-group">
+            <button (click)="viewUser(user.id_user)" class="action-button view">
+              <i class="fa fa-eye"></i>
+            </button>
+            <button (click)="openEditUserModal(user)" class="action-button edit">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button (click)="deleteUser(user)" class="action-button delete">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- aucun résultat -->
+      <tr *ngIf="!loading && users.length === 0">
+        <td colspan="7" class="text-center">Aucun utilisateur trouvé.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGINATION BACKEND -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <!-- Précédent (left arrow) -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()">
+          <i class="fa fa-angle-left"></i>
+        </a>
+      </li>
+
+      <!-- Numéros dynamiques -->
+      <li
+        *ngFor="let page of getPagesArray(); let i = index"
+        class="page-item"
+        [class.active]="currentPage === page"
+      >
+        <a class="page-link" href="#" (click)="goToPage(page); $event.preventDefault()">
+          {{ page }}
+        </a>
+      </li>
+
+      <!-- Suivant (right arrow) -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()">
+          <i class="fa fa-angle-right"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

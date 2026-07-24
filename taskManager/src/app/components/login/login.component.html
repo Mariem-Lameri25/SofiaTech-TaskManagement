@@ -1,0 +1,125 @@
+<div class="login-container">
+  <!-- Simplified Navigation Header -->
+  <nav class="navbar">
+    <div class="nav-content">
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="welcome-section">
+      <h1>Welcome Back!</h1>
+      <p>Sign in to your account to continue</p>
+    </div>
+
+    <div class="login-card">
+      <div class="card-header">
+        <h3>Sign In</h3>
+      </div>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <span class="error-icon">⚠️</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </span>
+            <input 
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              class="form-input"
+              [class.error]="isFieldInvalid('email')"
+              [disabled]="isLoading">
+          </div>
+          <div class="error-message" *ngIf="isFieldInvalid('email')">
+            {{ getFieldError('email') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <circle cx="12" cy="16" r="1"></circle>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input 
+              type="password"
+              formControlName="password"
+              placeholder="Enter your password"
+              class="form-input"
+              [class.error]="isFieldInvalid('password')"
+              [disabled]="isLoading">
+          </div>
+          <div class="error-message" *ngIf="isFieldInvalid('password')">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-container">
+            <input 
+              type="checkbox" 
+              formControlName="rememberMe"
+              class="form-checkbox"
+              [disabled]="isLoading">
+            <span class="checkmark"></span>
+            Remember me
+          </label>
+          <a routerLink="/forgot-password" class="forgot-link">
+            Forgot password?
+          </a>
+        </div>
+
+        <!-- Enhanced Submit Button with Loading State -->
+        <button 
+          type="submit" 
+          class="sign-in-btn"
+          [disabled]="isLoading || loginForm.invalid"
+          [class.loading]="isLoading">
+          <div class="btn-content">
+            <span *ngIf="isLoading" class="spinner"></span>
+            <span class="btn-text">{{ isLoading ? 'Signing in...' : 'Sign In' }}</span>
+          </div>
+        </button>
+      </form>
+
+      <div class="card-footer">
+        <p class="signup-link">
+          Don't have an account? 
+          <a routerLink="/register" class="signup-btn">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025 Your Company. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="decoration-circle circle-1"></div>
+    <div class="decoration-circle circle-2"></div>
+    <div class="decoration-circle circle-3"></div>
+  </div>
+</div>

@@ -1,0 +1,165 @@
+<div class="dashboard-container">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header mb-4">
+    <div class="header-content">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <p class="dashboard-subtitle">Welcome back! Here's your project overview.</p>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-grid mb-4">
+    <div class="stat-card stat-card-projects">
+      <div class="stat-icon">📊</div>
+      <div class="stat-info">
+        <div class="stat-label">Active Projects</div>
+        <div class="stat-value">{{ projectCount }}</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card-tasks">
+      <div class="stat-icon">✓</div>
+      <div class="stat-info">
+        <div class="stat-label">Open Tasks</div>
+        <div class="stat-value">{{ taskCount }}</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card-users">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <div class="stat-label">Team Members</div>
+        <div class="stat-value">{{ userCount }}</div>
+      </div>
+    </div>
+    <div class="stat-card stat-card-notifications">
+      <div class="stat-icon">🔔</div>
+      <div class="stat-info">
+        <div class="stat-label">Unread Notifications</div>
+        <div class="stat-value">{{ unreadNotificationCount }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid mb-4">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h6>📊 Overview Statistics</h6>
+      </div>
+      <div class="chart-body">
+        <ng-container *ngIf="errorProjects || errorTasks || errorUsers; else chartOrLoading1">
+          <div class="w-100">
+            <div *ngIf="errorProjects" class="alert alert-danger mb-0 alert-sm">{{ errorProjects }}</div>
+            <div *ngIf="errorTasks" class="alert alert-danger mb-0 alert-sm">{{ errorTasks }}</div>
+            <div *ngIf="errorUsers" class="alert alert-danger mb-0 alert-sm">{{ errorUsers }}</div>
+          </div>
+        </ng-container>
+        <ng-template #chartOrLoading1>
+          <ng-container *ngIf="!loadingProjects && !loadingTasks && !loadingUsers; else loadingChart1">
+           <canvas #barChart baseChart
+             [data]="barChartData"
+             [options]="barChartOptions"
+             chartType="bar"
+             height="80">
+           </canvas>
+          </ng-container>
+        </ng-template>
+        <ng-template #loadingChart1>
+          <div class="spinner-border text-primary spinner-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <h6>📈 Task Status</h6>
+      </div>
+      <div class="chart-body">
+        <ng-container *ngIf="errorTasks; else chartOrLoading2">
+          <div class="alert alert-danger mb-0 alert-sm">{{ errorTasks }}</div>
+        </ng-container>
+        <ng-template #chartOrLoading2>
+          <ng-container *ngIf="!loadingTasks; else loadingChart2">
+           <canvas #doughnutChart baseChart
+             [data]="doughnutChartData"
+             [options]="doughnutChartOptions"
+             chartType="doughnut"
+             height="80">
+           </canvas>
+          </ng-container>
+        </ng-template>
+        <ng-template #loadingChart2>
+          <div class="spinner-border text-primary spinner-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Items Section -->
+  <div class="lists-grid">
+    <div class="list-card">
+      <div class="list-header">
+        <h6>📁 Recent Projects</h6>
+      </div>
+      <div class="list-body">
+        <div *ngIf="errorProjects" class="alert alert-danger alert-sm mb-0">{{ errorProjects }}</div>
+        <div *ngIf="!errorProjects && recentProjects.length === 0" class="empty-state">
+          <p>No projects</p>
+        </div>
+        <div *ngIf="!errorProjects && recentProjects.length > 0" class="list-items-compact">
+          <div *ngFor="let project of recentProjects; let last = last" class="list-item-compact" [class.is-last]="last">
+            <div class="item-row">
+              <span class="item-name">{{ project.nom }}</span>
+              <span class="item-badge-sm" [ngClass]="'badge-' + (project.status | lowercase)">{{ project.status }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="list-card">
+      <div class="list-header">
+        <h6>✓ Recent Tasks</h6>
+      </div>
+      <div class="list-body">
+        <div *ngIf="errorTasks" class="alert alert-danger alert-sm mb-0">{{ errorTasks }}</div>
+        <div *ngIf="!errorTasks && recentTasks.length === 0" class="empty-state">
+          <p>No tasks</p>
+        </div>
+        <div *ngIf="!errorTasks && recentTasks.length > 0" class="list-items-compact">
+          <div *ngFor="let task of recentTasks; let last = last" class="list-item-compact" [class.is-last]="last">
+            <div class="item-row">
+              <span class="item-name">{{ task.nom }}</span>
+              <span class="item-badge-sm" [ngClass]="'badge-' + (task.status | lowercase)">{{ task.status }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="list-card">
+      <div class="list-header">
+        <h6>👥 Team Members</h6>
+      </div>
+      <div class="list-body">
+        <div *ngIf="errorUsers" class="alert alert-danger alert-sm mb-0">{{ errorUsers }}</div>
+        <div *ngIf="!errorUsers && recentUsers.length === 0" class="empty-state">
+          <p>No users</p>
+        </div>
+        <div *ngIf="!errorUsers && recentUsers.length > 0" class="list-items-compact">
+          <div *ngFor="let user of recentUsers; let last = last" class="list-item-compact" [class.is-last]="last">
+            <div class="item-row">
+              <div class="user-info">
+                <div class="user-avatar-sm">{{ (user.firstname?.charAt(0) || '') + (user.lastname?.charAt(0) || '') }}</div>
+                <div class="user-details">
+                  <div class="user-name">{{ user.firstname }} {{ user.lastname }}</div>
+                  <div class="user-email">{{ user.email }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,194 @@
+<div class="kanban-container">
+ 
+
+  <!-- Header -->
+  <div class="kanban-header">
+    <h1 class="kanban-title">Tâches du projet {{ project?.nom }}</h1>
+    <div class="kanban-stats">
+      <span class="stat-item">{{ allTasks.length }} tâches au total</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Chargement des tâches...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p class="error-message">{{ error }}</p>
+    <button class="retry-button" (click)="loadTasks()">Réessayer</button>
+  </div>
+
+  <!-- Kanban Board -->
+  <div *ngIf="!loading && !error" class="kanban-board">
+    
+    <!-- À faire Column -->
+    <div class="kanban-column todo-column">
+      <div class="column-header">
+        <div class="column-indicator todo-indicator"></div>
+        <h3 class="column-title">À faire</h3>
+        <span class="task-count">{{ todoTasks.length }}</span>
+      </div>
+      
+      <div 
+        cdkDropList 
+        #todoList="cdkDropList"
+        id="todo-drop-list"
+        [cdkDropListData]="todoTasks"
+        [cdkDropListConnectedTo]="[inProgressList, doneList]"
+        (cdkDropListDropped)="drop($event)"
+        class="task-list">
+        
+        <div 
+          *ngFor="let task of todoTasks; trackBy: getTaskId" 
+          cdkDrag
+          class="task-card">
+          <div cdkDragHandle class="drag-handle">
+            <div class="task-header">
+              <h4 class="task-title">{{ task.nom }}</h4>
+              <span class="task-id">#{{ task.id_tache || 'N/A' }}</span>
+            </div>
+            
+            <p class="task-description">{{ task.description }}</p>
+            
+            <div class="task-footer">
+              <span class="task-status">{{ task.status }}</span>
+              <span class="task-priority" [class]="getPriorityClass(task.priorite)">
+                {{ getPriorityLabel(task.priorite) }}
+              </span>
+            </div>
+            
+            <div class="task-meta">
+              <span class="task-date">{{ task.dateFin | date:'dd/MM/yyyy' }}</span>
+              <div class="task-assignee" *ngIf="task.assignedTo">
+                {{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Empty state for column -->
+        <div *ngIf="todoTasks.length === 0" class="empty-column">
+          <div class="empty-icon">📝</div>
+          <p class="empty-text">Aucune tâche</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- En cours Column -->
+    <div class="kanban-column progress-column">
+      <div class="column-header">
+        <div class="column-indicator progress-indicator"></div>
+        <h3 class="column-title">En cours</h3>
+        <span class="task-count">{{ inProgressTasks.length }}</span>
+      </div>
+      
+      <div 
+        cdkDropList 
+        #inProgressList="cdkDropList"
+        id="inprogress-drop-list"
+        [cdkDropListData]="inProgressTasks"
+        [cdkDropListConnectedTo]="[todoList, doneList]"
+        (cdkDropListDropped)="drop($event)"
+        class="task-list">
+        
+        <div 
+          *ngFor="let task of inProgressTasks; trackBy: getTaskId" 
+          cdkDrag
+          class="task-card">
+          <div cdkDragHandle class="drag-handle">
+            <div class="task-header">
+              <h4 class="task-title">{{ task.nom }}</h4>
+              <span class="task-id">#{{ task.id_tache || 'N/A' }}</span>
+            </div>
+            
+            <p class="task-description">{{ task.description }}</p>
+            
+            <div class="task-footer">
+              <span class="task-status">{{ task.status }}</span>
+              <span class="task-priority" [class]="getPriorityClass(task.priorite)">
+                {{ getPriorityLabel(task.priorite) }}
+              </span>
+            </div>
+            
+            <div class="task-meta">
+              <span class="task-date">{{ task.dateFin | date:'dd/MM/yyyy' }}</span>
+              <div class="task-assignee" *ngIf="task.assignedTo">
+                {{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="inProgressTasks.length === 0" class="empty-column">
+          <div class="empty-icon">⚡</div>
+          <p class="empty-text">Aucune tâche</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminé Column -->
+    <div class="kanban-column done-column">
+      <div class="column-header">
+        <div class="column-indicator done-indicator"></div>
+        <h3 class="column-title">Terminé</h3>
+        <span class="task-count">{{ doneTasks.length }}</span>
+      </div>
+      
+      <div 
+        cdkDropList 
+        #doneList="cdkDropList"
+        id="done-drop-list"
+        [cdkDropListData]="doneTasks"
+        [cdkDropListConnectedTo]="[todoList, inProgressList]"
+        (cdkDropListDropped)="drop($event)"
+        class="task-list">
+        
+        <div 
+          *ngFor="let task of doneTasks; trackBy: getTaskId" 
+          cdkDrag
+          class="task-card completed">
+          <div cdkDragHandle class="drag-handle">
+            <div class="task-header">
+              <h4 class="task-title">{{ task.nom }}</h4>
+              <span class="task-id">#{{ task.id_tache || 'N/A' }}</span>
+            </div>
+            
+            <p class="task-description">{{ task.description }}</p>
+            
+            <div class="task-footer">
+              <span class="task-status">{{ task.status }}</span>
+              <span class="task-priority" [class]="getPriorityClass(task.priorite)">
+                {{ getPriorityLabel(task.priorite) }}
+              </span>
+            </div>
+            
+            <div class="task-meta">
+              <span class="task-date">{{ task.dateFin | date:'dd/MM/yyyy' }}</span>
+              <div class="task-assignee" *ngIf="task.assignedTo">
+                {{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="doneTasks.length === 0" class="empty-column">
+          <div class="empty-icon">✅</div>
+          <p class="empty-text">Aucune tâche</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Global Empty State -->
+  <div *ngIf="!loading && !error && allTasks.length === 0" class="global-empty-state">
+    <div class="empty-illustration">📋</div>
+    <h3 class="empty-title">Aucune tâche trouvée</h3>
+    <p class="empty-subtitle">Commencez par créer une nouvelle tâche pour ce projet.</p>
+    <button class="create-task-button">+ Créer une tâche</button>
+  </div>
+</div>

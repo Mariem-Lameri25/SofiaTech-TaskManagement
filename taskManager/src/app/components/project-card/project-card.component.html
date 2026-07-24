@@ -1,0 +1,37 @@
+<div class="project-list">
+  <h2>Gestion des Projets</h2>
+
+  <div *ngIf="isLoading">Chargement des projets...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && projects.length === 0 && !errorMessage">
+    Aucun projet trouvé.
+  </div>
+
+  <div class="cards-container" *ngIf="!isLoading && projects.length > 0">
+    <div class="project-card" *ngFor="let project of projects">
+      <h3>{{ project.nom }}</h3>
+      <p><strong>Client :</strong> {{ project.nomClient  }}</p>
+      <p><strong>Description :</strong> {{ project.description }}</p>
+      <p><strong>Date Début :</strong> {{ project.dateDebut | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Date Fin :</strong> {{ project.dateFin | date:'dd/MM/yyyy' }}</p>
+      <p>
+        <strong>Statut :</strong>
+        <span [ngClass]="getStatusClass(project.status)">{{ project.status }}</span>
+      </p>
+      <p *ngIf="project.manager">
+        <strong>Manager :</strong>
+        {{ project.manager.firstname }} {{ project.manager.lastname }}
+      </p>
+
+      <div class="actions">
+        <a [routerLink]="['/projects', project.id_projet]" title="Voir le projet" class="action-icon">
+          <i class="fa fa-eye"></i>
+        </a>
+        <a [routerLink]="['/tasks/project', project.id_projet]" title="Voir les tâches" class="action-icon">
+          <i class="fa fa-tasks"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

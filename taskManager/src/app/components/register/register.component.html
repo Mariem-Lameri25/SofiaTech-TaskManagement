@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        /* Include your fixed CSS here */
+        .register-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ef162c 0%, #ed7b79 50%, #ef162c 100%);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .header {
+            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            backdrop-filter: blur(12px);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+            gap: 1.25rem;
+        }
+
+        .welcome-section {
+            text-align: center;
+            color: white;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(24px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 680px;
+            position: relative;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-header h2 {
+            color: #1e293b;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.25rem 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+
+        .divider span {
+            background: white;
+            color: #64748b;
+            padding: 0 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-fields {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+            width: calc(50% - 0.75rem);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            z-index: 2;
+            transition: color 0.3s ease;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fafafa;
+            position: relative;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ef162c;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(239, 22, 44, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .input-group:focus-within .input-icon {
+            color: #ef162c;
+        }
+
+        .input-group:has(.form-input.error) .input-icon {
+            color: #ef4444;
+        }
+
+        .password-strength {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .strength-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .strength-indicator {
+            font-weight: 600;
+        }
+
+        .strength-indicator.weak {
+            color: #ef4444;
+        }
+
+        .strength-indicator.medium {
+            color: #f59e0b;
+        }
+
+        .strength-indicator.strong {
+            color: #10b981;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .form-checkbox {
+            margin-top: 0.25rem;
+            width: 18px;
+            height: 18px;
+            accent-color: #ef162c;
+            border-radius: 4px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .link {
+            color: #ef162c;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .link:hover {
+            color: #c53030;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #ef162c 0%, #ed7b79 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.875rem;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(239, 22, 44, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2.25rem;
+            }
+            
+            .welcome-section p {
+                font-size: 1rem;
+            }
+            
+            .form-container {
+                margin: 0 1rem;
+                padding: 2rem;
+                border-radius: 14px;
+                max-width: 100%;
+            }
+
+            .input-group {
+                width: calc(50% - 0.75rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 1.75rem;
+                max-width: 100%;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="nav-container">
+                <nav class="nav-links">
+                   
+                    <a [routerLink]="['/login']" class="nav-link" style="cursor:pointer;text-decoration:underline;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 3H6C4.9 3 4 3.9 4 5V19C4 20.1 4.9 21 6 21H15" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="10,17 15,12 10,7" stroke="currentColor" stroke-width="2"/>
+                            <line x1="15" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Login
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="welcome-section">
+                <h1>Welcome!</h1>
+                <p>Welcome to our most famous task manager app in the enterprise industry</p>
+            </div>
+
+            <div class="form-container">
+               <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+  <div class="form-header">
+    <h2>Sign up</h2>
+  </div>
+
+  <div class="divider">
+    <span>Enter your credentials</span>
+  </div>
+
+  <!-- Form Fields -->
+  <div class="form-fields">
+    <!-- First Name -->
+    <div class="input-group">
+      <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 21V19C20 17.9 19.1 17 18 17H6C4.9 17 4 17.9 4 19V21" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <input 
+        type="text" 
+        formControlName="firstname"
+        placeholder="First Name" 
+        class="form-input" 
+        required
+      />
+    </div>
+
+    <!-- Last Name -->
+    <div class="input-group">
+      <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 21V19C20 17.9 19.1 17 18 17H6C4.9 17 4 17.9 4 19V21" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <input 
+        type="text" 
+        formControlName="lastname"
+        placeholder="Last Name" 
+        class="form-input" 
+        required
+      />
+    </div>
+
+    <!-- Email -->
+    <div class="input-group">
+      <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2"/>
+        <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <input 
+        type="email" 
+        formControlName="email"
+        placeholder="Email" 
+        class="form-input" 
+        required
+      />
+    </div>
+
+    <!-- Phone Number -->
+    <div class="input-group">
+      <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <input 
+        type="tel" 
+        formControlName="phoneNumber"
+        placeholder="Phone Number" 
+        class="form-input" 
+        required
+      />
+    </div>
+
+    <!-- Password -->
+    <div class="input-group">
+      <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="16" r="1" stroke="currentColor" stroke-width="2"/>
+        <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <input 
+        type="password" 
+        formControlName="password"
+        placeholder="Password" 
+        class="form-input" 
+        required
+      />
+      <div class="password-strength">
+        <span class="strength-label">password strength:</span>
+        <span class="strength-indicator {{ passwordStrength }}">{{ passwordStrength }}</span>
+      </div>
+    </div>
+
+    <!-- Terms and Conditions -->
+    <div class="checkbox-group">
+      <input 
+        type="checkbox" 
+        id="agreeToTerms" 
+        formControlName="agreeToTerms"
+        class="form-checkbox"
+        required
+      />
+      <label for="agreeToTerms">
+        I agree with the <a href="#" class="link">Privacy Policy</a>
+      </label>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-btn" [disabled]="registerForm.invalid">
+      Create account
+    </button>
+    
+  </div>
+</form>
+
+            </div>
+        </main>
+         <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="decoration-circle circle-1"></div>
+    <div class="decoration-circle circle-2"></div>
+    <div class="decoration-circle circle-3"></div>
+  </div>
+    </div>
+
+    <script>
+        // Simple form validation and password strength checker
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.querySelector('input[type="password"]');
+            const strengthIndicator = document.querySelector('.strength-indicator');
+            const form = document.querySelector('.register-form');
+            
+            if (passwordInput && strengthIndicator) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    let strength = 'weak';
+                    
+                    if (password.length >= 8) {
+                        if (/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) {
+                            strength = 'strong';
+                        } else if (/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                            strength = 'medium';
+                        }
+                    }
+                    
+                    strengthIndicator.textContent = strength;
+                    strengthIndicator.className = `strength-indicator ${strength}`;
+                });
+            }
+            
+            // Form submission handler
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData);
+                    
+                    console.log('Form submitted with data:', data);
+                    alert('Registration form submitted! Check console for details.');
+                });
+            }
+            
+            // Add focus/blur effects for better UX
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group').classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group').classList.remove('focused');
+                    
+                    // Simple validation
+                    if (this.required && !this.value.trim()) {
+                        this.classList.add('error');
+                    } else {
+                        this.classList.remove('error');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

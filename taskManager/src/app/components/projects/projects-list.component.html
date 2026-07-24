@@ -1,0 +1,430 @@
+<div class="projects-container">
+  <h2>Liste des projets</h2>
+  
+  <button class="btn btn-primary" (click)="showAddProjectModal = true">
+    + Nouveau projet
+  </button>
+  <div class="filters mb-3">
+  <input type="text" [(ngModel)]="searchTerm" placeholder="🔍 Rechercher par nom, client, abréviation" />
+
+  <select [(ngModel)]="selectedStatus">
+    <option value="">Tous les statuts</option>
+    <option *ngFor="let status of projectStatuses" [value]="status">{{ status }}</option>
+  </select>
+</div>
+ <!-- 🗂️ Liste des projets -->
+<table class="projects-table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Client</th>
+      <th>Abréviation</th>
+      <th>Date Début</th>
+      <th>Date Fin</th>
+      <th>Manager</th>
+      <th>Status</th>
+      <th>Assigner à</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr *ngFor="let project of paginatedProjects">
+      <td>{{ project.nom }}</td>
+      <td>{{ project.nomClient }}</td>
+      <td>{{ project.abreviation }}</td>
+      <td>{{ project.dateDebut | date: 'yyyy-MM-dd' }}</td>
+      <td>{{ project.dateFin | date: 'yyyy-MM-dd' }}</td>
+      <td>{{ project.manager?.firstname }} {{ project.manager?.lastname }}</td>
+      <td>{{ project.status }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let member of project.projectUsers">
+            {{ member.utilisateur.firstname }} {{ member.utilisateur.lastname }} ({{ member.roleProjet }})
+          </li>
+        </ul>
+      </td>
+      <td>
+        <div class="action-buttons-group">
+          <button class="btn btn-sm btn-outline-primary me-1" 
+                  (click)="openEditModal(project)"
+                  title="Modifier le projet">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" 
+                  (click)="deleteProject(project)"
+                  title="Supprimer le projet">
+            <i class="fa fa-trash"></i>
+          </button>
+          <a [routerLink]="['/tasks/project', project.id_projet]" title="Voir les tâches" class="btn btn-sm btn-secondary">
+            <i class="fa fa-tasks"></i>
+          </a>
+        </div>
+
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+
+    <!-- Précédent -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()">
+        <i class="fa fa-angle-left"></i>
+        <span class="sr-only">Précédent</span>
+      </a>
+    </li>
+
+    <!-- Numéros de pages dynamiques -->
+    <li
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      class="page-item"
+      [class.active]="currentPage === i + 1"
+    >
+      <a class="page-link" href="#" (click)="goToPage(i + 1); $event.preventDefault()">
+        {{ i + 1 }}
+      </a>
+    </li>
+
+    <!-- Suivant -->
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()">
+        <i class="fa fa-angle-right"></i>
+        <span class="sr-only">Suivant</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+
+
+
+<!-- Create Project Modal - Tasks Style -->
+<div class="modal" *ngIf="showAddProjectModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Créer une nouveau projet</h3>
+      <span class="close" (click)="showAddProjectModal = false">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+
+    <form (ngSubmit)="createProject()">
+      <div class="modal-body">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">
+              <i class="fas fa-project-diagram"></i>
+              Nom du projet
+            </label>
+            <input 
+              id="nom"
+              [(ngModel)]="newProject.nom" 
+              name="nom" 
+              placeholder="Nom du projet" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="nomClient">
+              <i class="fas fa-user-tie"></i>
+              Nom du client
+            </label>
+            <input 
+              id="nomClient"
+              [(ngModel)]="newProject.nomClient" 
+              name="nomClient" 
+              placeholder="Nom du client" 
+              required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="abreviation">
+            <i class="fas fa-tag"></i>
+            Abréviation
+          </label>
+          <input 
+            id="abreviation"
+            [(ngModel)]="newProject.abreviation" 
+            name="abreviation" 
+            placeholder="Abréviation du projet" 
+            required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateDebut">
+              <i class="fas fa-calendar-alt"></i>
+              Date de début
+            </label>
+            <input 
+              id="dateDebut"
+              [(ngModel)]="newProject.dateDebut" 
+              name="dateDebut" 
+              type="date" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="dateFin">
+              <i class="fas fa-calendar-check"></i>
+              Date de fin
+            </label>
+            <input 
+              id="dateFin"
+              [(ngModel)]="newProject.dateFin" 
+              name="dateFin" 
+              type="date" 
+              required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">
+            <i class="fas fa-align-left"></i>
+            Description
+          </label>
+          <textarea 
+            id="description"
+            [(ngModel)]="newProject.description" 
+            name="description" 
+            placeholder="Décrivez le projet en détail..."
+            rows="4">
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="managerId">
+            <i class="fas fa-user-cog"></i>
+            Manager
+          </label>
+          <select [(ngModel)]="newProject.managerId" name="managerId" required>
+  <option value="" disabled>Sélectionner un manager</option>
+  <option 
+    *ngFor="let manager of managers" 
+    [value]="manager.id_user">
+    {{ manager.firstname }} {{ manager.lastname }}
+  </option>
+</select>
+
+        </div>
+
+        <!-- Team Members Section -->
+        <div class="form-group">
+          <label>
+            <i class="fas fa-users"></i>
+            Membres de l'équipe
+          </label>
+          <div class="team-members-container">
+            <div *ngFor="let member of teamMembers; let i = index" class="team-member-row">
+              <div class="member-inputs">
+                <select [(ngModel)]="teamMembers[i].userId" [name]="'teamMemberUserId' + i" required>
+                  <option value="" disabled>Choisir un membre</option>
+                  <option *ngFor="let user of users" [value]="user.id_user">
+                    {{ user.firstname }} {{ user.lastname }}
+                  </option>
+                </select>
+                
+                <select [(ngModel)]="teamMembers[i].roleProjet" [name]="'teamMemberRole' + i" required>
+                  <option value="" disabled>Choisir un rôle</option>
+                  <option *ngFor="let role of projectRoles" [value]="role">
+                    {{ role }}
+                  </option>
+                </select>
+              </div>
+              
+              <button type="button" class="remove-member-btn" (click)="removeTeamMember(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          
+          <button type="button" class="add-member-btn" (click)="addTeamMember()">
+            <i class="fas fa-plus"></i> Ajouter un membre
+          </button>
+        </div>
+
+        <!-- Action buttons inside scrollable area -->
+        <div class="form-actions">
+          <button type="button" (click)="showAddProjectModal = false" class="btn-cancel">
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button type="submit" class="btn-create">
+            <i class="fas fa-check"></i> Créer le projet
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Edit Project Modal - Tasks Style -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Modifier le projet</h3>
+      <span class="close" (click)="showEditModal = false">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+
+    <form (ngSubmit)="updateProject()" *ngIf="selectedProject">
+      <div class="modal-body">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editNom">
+              <i class="fas fa-project-diagram"></i>
+              Nom du projet
+            </label>
+            <input 
+              id="editNom"
+              [(ngModel)]="selectedProject.nom" 
+              name="editNom" 
+              placeholder="Nom du projet" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="editNomClient">
+              <i class="fas fa-user-tie"></i>
+              Nom du client
+            </label>
+            <input 
+              id="editNomClient"
+              [(ngModel)]="selectedProject.nomClient" 
+              name="editNomClient" 
+              placeholder="Nom du client" 
+              required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editAbreviation">
+            <i class="fas fa-tag"></i>
+            Abréviation
+          </label>
+          <input 
+            id="editAbreviation"
+            [(ngModel)]="selectedProject.abreviation" 
+            name="editAbreviation" 
+            placeholder="Abréviation du projet" 
+            required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editDateDebut">
+              <i class="fas fa-calendar-alt"></i>
+              Date de début
+            </label>
+            <input 
+              id="editDateDebut"
+              [(ngModel)]="selectedProject.dateDebut" 
+              name="editDateDebut" 
+              type="date" 
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="editDateFin">
+              <i class="fas fa-calendar-check"></i>
+              Date de fin
+            </label>
+            <input 
+              id="editDateFin"
+              [(ngModel)]="selectedProject.dateFin" 
+              name="editDateFin" 
+              type="date" 
+              required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editDescription">
+            <i class="fas fa-align-left"></i>
+            Description
+          </label>
+          <textarea 
+            id="editDescription"
+            [(ngModel)]="selectedProject.description" 
+            name="editDescription" 
+            placeholder="Décrivez le projet en détail..."
+            rows="4">
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editManagerId">
+            <i class="fas fa-user-cog"></i>
+            Manager
+          </label>
+          <select [(ngModel)]="selectedProject.managerId" name="editManagerId" required>
+  <option value="" disabled>Sélectionner un manager</option>
+  <option 
+    *ngFor="let manager of managers" 
+    [value]="manager.id_user">
+    {{ manager.firstname }} {{ manager.lastname }}
+  </option>
+</select>
+
+        </div>
+
+        <!-- Edit Team Members Section -->
+        <div class="form-group">
+          <label>
+            <i class="fas fa-users"></i>
+            Membres de l'équipe
+          </label>
+          <div class="team-members-container">
+            <div *ngFor="let member of editTeamMembers; let i = index" class="team-member-row">
+              <div class="member-inputs">
+                <select [(ngModel)]="editTeamMembers[i].userId" [name]="'editTeamMemberUserId' + i" required>
+                  <option value="" disabled>Choisir un membre</option>
+                  <option *ngFor="let user of users" [value]="user.id_user">
+                    {{ user.firstname }} {{ user.lastname }}
+                  </option>
+                </select>
+                
+                <select [(ngModel)]="editTeamMembers[i].roleProjet" [name]="'editTeamMemberRole' + i" required>
+                  <option value="" disabled>Choisir un rôle</option>
+                  <option *ngFor="let role of projectRoles" [value]="role">
+                    {{ role }}
+                  </option>
+                </select>
+              </div>
+              
+              <button type="button" class="remove-member-btn" (click)="removeEditTeamMember(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          
+          <button type="button" class="add-member-btn" (click)="addEditTeamMember()">
+            <i class="fas fa-plus"></i> Ajouter un membre
+          </button>
+        </div>
+
+        <!-- Action buttons inside scrollable area -->
+        <div class="form-actions">
+          <button type="button" (click)="showEditModal = false" class="btn-cancel">
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button type="submit" class="btn-create">
+            <i class="fas fa-check"></i> Enregistrer les modifications
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div>

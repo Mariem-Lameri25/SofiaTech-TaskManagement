@@ -1,0 +1,389 @@
+// Blur overlay effect
+.blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(5px);
+  }
+}
+
+.custom-navbar {
+  height: 80px;
+  background: rgb(250, 249, 249);
+  color: white;
+  margin-left: 0;
+  width: calc(100vw - 260px); // Slightly less width to account for gap
+  position: fixed;
+  top: 0;
+  left: 260px; // Start 10px after sidebar ends (250px + 10px gap)
+  z-index: 1030;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  .navbar-brand-container {
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      margin: 0;
+      
+      &:hover {
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+
+  .search-form {
+    .input-group {
+      width: 300px; // Fixed width for consistency
+      
+      .search-input {
+        background: white;
+        border: 1px solid rgba(254, 17, 17, 0.3);
+        color: #ff6b35;
+        border-radius: 25px 0 0 25px;
+        padding: 0.5rem 1rem;
+        
+        &::placeholder {
+          color: rgb(236, 149, 149);
+        }
+        
+        &:focus {
+          background: rgba(255, 255, 255, 0.25);
+          border-color: rgba(239, 144, 144, 0.5);
+          box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+          color: rgb(5, 5, 5);
+        }
+      }
+      
+      .search-btn {
+        background: linear-gradient(135deg, #ff061f 0%, #f4616f 100%);
+        border: 1px solid rgba(254, 17, 17, 0.3);
+        border-left: none;
+        color: white;
+        border-radius: 0 25px 25px 0;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: linear-gradient(135deg, #d63384 0%, #fd3714 100%);
+          border-color: rgba(254, 17, 17, 0.3);
+          color: rgba(239, 144, 144, 0.5);
+        }
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+  }
+
+  .notification-section {
+    .notification-btn {
+      background: linear-gradient(135deg, #ff061f 0%, #f4616f 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, #d63384 0%, #fd3714 100%);
+        border-color: rgba(250, 246, 246, 0.5);
+        color: rgba(250, 248, 248, 0.5);
+        transform: translateY(-1px);
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+      }
+      
+      i {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+  }
+
+  .profile-section {
+    .profile-info {
+      .profile-avatar {
+        object-fit: cover;
+        border: 2px solid rgba(240, 37, 22, 0.3);
+        transition: border-color 0.3s ease;
+        
+        
+        &:hover {
+          border-color: linear-gradient(135deg, #ff061f 0%, #f4616f 100%);
+          transform: translateY(-1px);
+        }
+      }
+      
+      .username {
+        font-weight: 500;
+        font-size: 1rem;
+        color: rgb(169, 42, 37);
+        white-space: nowrap;
+      }
+    }
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #ff061f 0%, #f4616f 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: linear-gradient(135deg, #d63384 0%, #fd3714 100%);
+        border-color: rgba(243, 138, 138, 0.5);
+        color: rgb(250, 249, 249);
+        transform: translateY(-1px);
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+      }
+    }
+  }
+}
+
+// Add this class to your main content container
+.main-content {
+  margin-left: 250px; // Should match sidebar width
+  margin-top: 80px; // Should match navbar height
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+}
+
+// Sidebar should remain normal z-index
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  z-index: 1020; // Lower than navbar
+  background: white;
+}
+
+// Responsive adjustments
+@media (max-width: 1200px) {
+  .custom-navbar {
+    left: 210px; // 200px sidebar + 10px gap
+    width: calc(100vw - 220px);
+    
+    .search-form .input-group {
+      width: 250px;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .custom-navbar {
+    left: 0; // No sidebar on mobile
+    width: 100vw;
+    height: auto;
+    padding: 1rem;
+    flex-wrap: wrap;
+    position: sticky; // Back to sticky on mobile
+    
+    .search-form {
+      order: 1;
+      width: 100%;
+      margin-bottom: 1rem;
+      margin-right: 0 !important;
+      
+      .input-group {
+        width: 100%;
+      }
+    }
+    
+    .notification-section {
+      order: 2;
+    }
+    
+    .profile-section {
+      order: 3;
+      margin-left: auto;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-navbar {
+    .profile-info .username {
+      display: none; // Hide username on very small screens
+    }
+    
+    .logout-btn {
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+    }
+    
+    .notification-section .notification-btn {
+      width: 36px;
+      height: 36px;
+      
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+/* Fade-down animation */
+  @keyframes fadeDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+.notification-dropdown {
+  position: absolute;
+  top: 50px; // légèrement plus bas pour éviter de coller l'icône
+  right: 0;
+  width: 320px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 1001;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+/* Animation applied on show */
+    animation: fadeDown 0.25s ease-out;
+  /* Nouvelle règle pour scroller */
+  max-height: 400px; /* limite de hauteur */
+  overflow-y: auto; /* scroll vertical si nécessaire */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #ccc transparent; /* Firefox */
+
+  /* Scrollbar pour Chrome/Edge */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  
+
+  .notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: default;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    small {
+      display: block;
+      font-size: 12px;
+      color: #888;
+    }
+
+    button {
+      font-size: 12px;
+      padding: 0;
+      margin-top: 4px;
+    }
+  }
+
+  .no-notifications {
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.dropdown-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #ddd;
+
+      strong {
+        font-size: 14px;
+      }
+    }

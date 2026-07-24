@@ -1,0 +1,282 @@
+<div class="profile-container">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="page-title mb-1">{{ isEditMode ? 'Edit Profile' : 'User Profile' }}</h1>
+        <p class="text-muted mb-0">Manage your personal information and settings</p>
+      </div>
+      <div class="header-actions">
+        <button 
+          *ngIf="!isEditMode" 
+          class="btn btn-danger btn-modern"
+          (click)="toggleEditMode()">
+          <i class="bi bi-pencil-square me-2"></i>
+          Edit Profile
+        </button>
+        <button 
+          *ngIf="isEditMode" 
+          class="btn btn-outline-secondary btn-modern"
+          (click)="cancelEdit()">
+          <i class="bi bi-x-lg me-2"></i>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-content" *ngIf="user">
+    <div class="row g-4">
+      <!-- Avatar Section -->
+      <div class="col-12">
+        <div class="card card-modern">
+          <div class="card-body text-center">
+            <div class="avatar-section">
+              <div class="avatar-container position-relative d-inline-block">
+                <img 
+                  [src]="user.avatar || '/assets/default-avatar.png'" 
+                  [alt]="user.firstname + ' ' + user.lastname"
+                  class="avatar-image"
+                  (error)="onImageError($event)">
+                
+                <!-- Avatar Upload Overlay -->
+                <div class="avatar-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                     *ngIf="isEditMode">
+                  <input 
+                    type="file" 
+                    #fileInput 
+                    accept="image/*" 
+                    (change)="onAvatarSelected($event)"
+                    class="d-none">
+                  <button 
+                    class="btn btn-danger btn-sm avatar-upload-btn"
+                    (click)="fileInput.click()">
+                    <i class="bi bi-camera-fill me-1"></i>
+                    Change
+                  </button>
+                </div>
+              </div>
+              
+              <div class="mt-3">
+                <h4 class="mb-1">{{ user.firstname }} {{ user.lastname }}</h4>
+                <span class="badge role-badge role-{{ user.role.toLowerCase() }} fs-6">
+                  <i class="bi bi-person-badge me-1"></i>
+                  {{ user.role }}
+                </span>
+              </div>
+              
+              <!-- Upload Progress -->
+              <div class="upload-progress mt-3" *ngIf="uploadProgress > 0 && uploadProgress < 100">
+                <div class="progress progress-modern mb-2">
+                  <div class="progress-bar bg-danger" 
+                       role="progressbar" 
+                       [style.width.%]="uploadProgress"
+                       [attr.aria-valuenow]="uploadProgress" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100">
+                  </div>
+                </div>
+                <small class="text-muted">Uploading... {{ uploadProgress }}%</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="col-12">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Personal Information Card -->
+          <div class="card card-modern mb-4">
+            <div class="card-header card-header-modern">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-person-circle me-2 text-danger"></i>
+                Personal Information
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      id="firstname"
+                      type="text" 
+                      formControlName="firstname"
+                      [readonly]="!isEditMode"
+                      class="form-control form-control-modern"
+                      [class.is-invalid]="profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched"
+                      placeholder="First Name">
+                    <label for="firstname">
+                      <i class="bi bi-person me-1"></i>
+                      First Name
+                    </label>
+                    <div class="invalid-feedback" *ngIf="profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched">
+                      First name is required
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      id="lastname"
+                      type="text" 
+                      formControlName="lastname"
+                      [readonly]="!isEditMode"
+                      class="form-control form-control-modern"
+                      [class.is-invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
+                      placeholder="Last Name">
+                    <label for="lastname">
+                      <i class="bi bi-person me-1"></i>
+                      Last Name
+                    </label>
+                    <div class="invalid-feedback" *ngIf="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched">
+                      Last name is required
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      id="email"
+                      type="email" 
+                      formControlName="email"
+                      [readonly]="!isEditMode"
+                      class="form-control form-control-modern"
+                      [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+                      placeholder="Email">
+                    <label for="email">
+                      <i class="bi bi-envelope me-1"></i>
+                      Email Address
+                    </label>
+                    <div class="invalid-feedback" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                      <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required</span>
+                      <span *ngIf="profileForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      id="phoneNumber"
+                      type="tel" 
+                      formControlName="phoneNumber"
+                      [readonly]="!isEditMode"
+                      class="form-control form-control-modern"
+                      [class.is-invalid]="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched"
+                      placeholder="Phone Number">
+                    <label for="phoneNumber">
+                      <i class="bi bi-telephone me-1"></i>
+                      Phone Number
+                    </label>
+                    <div class="invalid-feedback" *ngIf="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched">
+                      Phone number is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password Section (only in edit mode) -->
+          <div class="card card-modern mb-4" *ngIf="isEditMode">
+            <div class="card-header card-header-modern">
+              <h5 class="card-title mb-0">
+                <i class="bi bi-shield-lock me-2 text-danger"></i>
+                Security Settings
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <div>Leave blank to keep your current password</div>
+              </div>
+              
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <div class="form-floating">
+                    <input 
+                      id="password"
+                      type="password" 
+                      formControlName="password"
+                      class="form-control form-control-modern"
+                      placeholder="New Password"
+                      [disabled]="!!currentUser && currentUser.role === 'ADMIN' && currentUser.id_user !== user.id_user">
+                    <label for="password">
+                      <i class="bi bi-key me-1"></i>
+                      New Password
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions d-flex gap-3 justify-content-end" *ngIf="isEditMode">
+            <button 
+              type="button" 
+              class="btn btn-outline-secondary btn-modern"
+              (click)="cancelEdit()">
+              <i class="bi bi-x-lg me-2"></i>
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-danger btn-modern"
+              [disabled]="profileForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <i *ngIf="!isLoading" class="bi bi-check-lg me-2"></i>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container text-center py-5" *ngIf="!user && isLoading">
+    <div class="spinner-border text-danger mb-3" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="text-muted">Loading your profile...</h5>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container text-center py-5" *ngIf="errorMessage">
+    <div class="card card-modern border-danger bg-danger-subtle mx-auto" style="max-width: 400px;">
+      <div class="card-body">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-3"></i>
+        <h5 class="card-title text-danger">Something went wrong</h5>
+        <p class="card-text text-danger-emphasis">{{ errorMessage }}</p>
+        <button class="btn btn-danger btn-modern" (click)="loadUser()">
+          <i class="bi bi-arrow-clockwise me-2"></i>
+          Try Again
+        </button>()">
+          <i class="bi bi-arrow-clockwise me-2"></i>
+          Try Again
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <div class="toast success-toast" 
+       [class.show]="showSuccessMessage" 
+       role="alert" 
+       aria-live="assertive" 
+       aria-atomic="true">
+    <div class="toast-header bg-success text-white">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <strong class="me-auto">Success</strong>
+    </div>
+    <div class="toast-body bg-success-subtle">
+      {{ successMessage }}
+    </div>
+  </div>
+</div>

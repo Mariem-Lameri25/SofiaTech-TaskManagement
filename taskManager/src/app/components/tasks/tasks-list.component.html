@@ -1,0 +1,464 @@
+<div class="tasks-container">
+
+  <h2>Liste des tâches</h2>
+
+  <button (click)="openCreateModal()">Créer une tâche</button>
+
+  <!-- Search and Filter Controls -->
+  <div class="filters">
+    <input 
+      [(ngModel)]="searchTerm" 
+      (ngModelChange)="onSearchTermChange()" 
+      placeholder="Rechercher par nom ou description..."
+      class="search-input">
+    
+    <select 
+      [(ngModel)]="selectedStatus" 
+      (change)="onStatusFilterChange()" 
+      class="filter-select">
+      <option value="">Tous les statuts</option>
+      <option *ngFor="let status of TaskStatus | keyvalue" [value]="status.value">
+        {{ status.value }}
+      </option>
+    </select>
+    
+    <select 
+      [(ngModel)]="selectedPriority" 
+      (change)="onPriorityFilterChange()" 
+      class="filter-select">
+      <option value="">Toutes les priorités</option>
+      <option *ngFor="let priority of TaskPriority | keyvalue" [value]="priority.value">
+        {{ priority.value }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    Chargement des tâches...
+  </div>
+
+  <!-- Tasks Table avec conteneur responsive -->
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="tasks-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Projet</th>
+          <th>Créé Par</th>
+          <th>Location</th>
+          <th>Assignée à</th>
+          <th>Status</th>
+          <th>Priorité</th>
+          <th>Labels</th>
+          <th>Date Début</th>
+          <th>Date Fin</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks">
+          <td>{{ task.nom }}</td>
+          <td>{{ task.project.nom || '-' }}</td>
+          <td>{{ task.createdBy.firstname }} {{ task.createdBy.lastname }}</td>
+          <td>{{ task.location }}</td>
+          <td>{{ task.assignedTo.firstname }} {{ task.assignedTo.lastname }}</td>
+          <td>
+            <span class="status-badge" [class]="'status-' + task.status.toLowerCase()">
+              {{ task.status }}
+            </span>
+          </td>
+          <td>
+            <span class="priority-badge" [class]="'priority-' + task.priorite.toLowerCase()">
+              {{ task.priorite }}
+            </span>
+          </td>
+          <td>
+            <span *ngIf="getLabelsDisplay(task.labels); let labelsText">{{ labelsText }}</span>
+            <span *ngIf="!getLabelsDisplay(task.labels)">-</span>
+          </td>
+          <td>{{ task.dateDebut | date:'dd/MM/yyyy' }}</td>
+          <td>{{ task.dateFin | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="edit-btn" (click)="openEditModal(task)" title="Modifier la tâche">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="delete-btn" (click)="deleteTask(task.id_tache!)" title="Supprimer la tâche">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="tasks.length === 0" class="no-data">
+          <td colspan="11">
+            Aucune tâche trouvée
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav aria-label="Page navigation" *ngIf="totalPages > 1">
+    <ul class="pagination justify-content-center">
+
+      <!-- Précédent -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()">
+          <i class="fa fa-angle-left"></i>
+          <span class="sr-only">Précédent</span>
+        </a>
+      </li>
+
+      <!-- Numéros de pages dynamiques -->
+      <li
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        class="page-item"
+        [class.active]="currentPage === i + 1"
+      >
+        <a class="page-link" href="#" (click)="goToPage(i + 1); $event.preventDefault()">
+          {{ i + 1 }}
+        </a>
+      </li>
+
+      <!-- Suivant -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()">
+          <i class="fa fa-angle-right"></i>
+          <span class="sr-only">Suivant</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+  <!-- Create Task Modal -->
+  <div class="modal" *ngIf="showAddTaskModal">
+    <div class="modal-content">
+      <span class="close" (click)="closeCreateModal()">&times;</span>
+
+      <h3>Créer une nouvelle tâche</h3>
+      <form (ngSubmit)="createTask()">
+
+        <div class="form-group">
+          <label for="nom">Nom de la tâche *</label>
+          <input 
+            id="nom"
+            [(ngModel)]="newTask.nom" 
+            name="nom" 
+            placeholder="Entrez le nom de la tâche" 
+            required>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['nom']" class="error-message">{{ formErrors['nom'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea 
+            id="description"
+            [(ngModel)]="newTask.description" 
+            name="description" 
+            placeholder="Décrivez la tâche en détail..." 
+            required>
+          </textarea>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['description']" class="error-message">{{ formErrors['description'] }}</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateDebut">Date de début *</label>
+            <input 
+              id="dateDebut"
+              [(ngModel)]="newTask.dateDebut" 
+              name="dateDebut" 
+              type="date" 
+              required>
+            <div class="input-effect"></div>
+            <div *ngIf="formErrors['dateDebut']" class="error-message">{{ formErrors['dateDebut'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label for="dateFin">Date de fin *</label>
+            <input 
+              id="dateFin"
+              [(ngModel)]="newTask.dateFin" 
+              name="dateFin" 
+              type="date" 
+              required>
+            <div class="input-effect"></div>
+            <div *ngIf="formErrors['dateFin']" class="error-message">{{ formErrors['dateFin'] }}</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Lieu *</label>
+          <input 
+            id="location"
+            [(ngModel)]="newTask.location" 
+            name="location" 
+            placeholder="Lieu d'exécution de la tâche" 
+            required>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['location']" class="error-message">{{ formErrors['location'] }}</div>
+        </div>
+
+        <!-- Project Selection -->
+        <div class="form-group">
+          <label for="projectId">Projet *</label>
+          <select [(ngModel)]="newTask.project.id_projet" name="projectId" required>
+            <option value="" disabled>Sélectionner un projet</option>
+            <option 
+              *ngFor="let project of projects" 
+              [value]="project.id_projet">
+              {{ project.nom }}
+            </option>
+          </select>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['projectId']" class="error-message">
+            {{ formErrors['projectId'] }}
+          </div>
+        </div>
+
+        <!-- Assigned To Selection -->
+        <div class="form-group">
+          <label for="assignedTo">Assigné à *</label>
+          <select 
+            id="assignedTo"
+            [(ngModel)]="newTask.assignedTo.id_user" 
+            name="assignedTo" 
+            required>
+            <option value="" disabled>Sélectionner un utilisateur</option>
+            <option 
+              *ngFor="let user of users" 
+              [value]="user.id_user">
+              {{ user.firstname }} {{ user.lastname }}
+            </option>
+          </select>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['assignedToId']" class="error-message">
+            {{ formErrors['assignedToId'] }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="status">Statut</label>
+            <select 
+              id="status"
+              [(ngModel)]="newTask.status" 
+              name="status">
+              <option 
+                *ngFor="let status of TaskStatus | keyvalue" 
+                [value]="status.value">
+                {{ status.value }}
+              </option>
+            </select>
+            <div class="input-effect"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="priorite">Priorité</label>
+            <select 
+              id="priorite"
+              [(ngModel)]="newTask.priorite" 
+              name="priorite">
+              <option 
+                *ngFor="let priority of TaskPriority | keyvalue" 
+                [value]="priority.value">
+                {{ priority.value }}
+              </option>
+            </select>
+            <div class="input-effect"></div>
+          </div>
+        </div>
+
+        <!-- Labels input -->
+        <div class="form-group">
+          <label>Labels</label>
+          <input 
+            type="text" 
+            [(ngModel)]="labelsInput" 
+            name="labels" 
+            placeholder="Tapez les labels séparés par des virgules (ex: urgent, frontend)">
+          <div class="input-effect"></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" (click)="closeCreateModal()" class="cancel-btn">
+            Annuler
+          </button>
+          <button type="submit" class="submit-btn" [disabled]="submitting">
+            Créer la tâche
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div class="modal" *ngIf="showEditTaskModal">
+    <div class="modal-content">
+      <span class="close" (click)="closeEditModal()">&times;</span>
+
+      <h3>Modifier la tâche</h3>
+      <form (ngSubmit)="updateTask(selectedTask)">
+
+        <div class="form-group">
+          <label for="editNom">Nom de la tâche *</label>
+          <input 
+            id="editNom"
+            [(ngModel)]="selectedTask.nom" 
+            name="editNom" 
+            placeholder="Entrez le nom de la tâche" 
+            required>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['nom']" class="error-message">{{ formErrors['nom'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="editDescription">Description *</label>
+          <textarea 
+            id="editDescription"
+            [(ngModel)]="selectedTask.description" 
+            name="editDescription" 
+            placeholder="Décrivez la tâche en détail..." 
+            required>
+          </textarea>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['description']" class="error-message">{{ formErrors['description'] }}</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editDateDebut">Date de début *</label>
+            <input 
+              id="editDateDebut"
+              [(ngModel)]="selectedTask.dateDebut" 
+              name="editDateDebut" 
+              type="date" 
+              required>
+            <div class="input-effect"></div>
+            <div *ngIf="formErrors['dateDebut']" class="error-message">{{ formErrors['dateDebut'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label for="editDateFin">Date de fin *</label>
+            <input 
+              id="editDateFin"
+              [(ngModel)]="selectedTask.dateFin" 
+              name="editDateFin" 
+              type="date" 
+              required>
+            <div class="input-effect"></div>
+            <div *ngIf="formErrors['dateFin']" class="error-message">{{ formErrors['dateFin'] }}</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editLocation">Lieu *</label>
+          <input 
+            id="editLocation"
+            [(ngModel)]="selectedTask.location" 
+            name="editLocation" 
+            placeholder="Lieu d'exécution de la tâche" 
+            required>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['location']" class="error-message">{{ formErrors['location'] }}</div>
+        </div>
+
+        <!-- Project Selection -->
+        <div class="form-group">
+          <label for="editProject">Projet *</label>
+          <select [(ngModel)]="selectedTask.project.id_projet" name="editProject" required>
+            <option value="" disabled>Sélectionner un projet</option>
+            <option 
+              *ngFor="let project of projects" 
+              [value]="project.id_projet">
+              {{ project.nom }}
+            </option>
+          </select>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['projectId']" class="error-message">
+            {{ formErrors['projectId'] }}
+          </div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="form-group">
+          <label for="editAssignedTo">Assigné à *</label>
+          <select 
+            id="editAssignedTo"
+            [(ngModel)]="selectedTask.assignedTo.id_user" 
+            name="editAssignedTo" 
+            required>
+            <option value="" disabled>Sélectionner un utilisateur</option>
+            <option 
+              *ngFor="let user of users" 
+              [value]="user.id_user">
+              {{ user.firstname }} {{ user.lastname }}
+            </option>
+          </select>
+          <div class="input-effect"></div>
+          <div *ngIf="formErrors['assignedToId']" class="error-message">
+            {{ formErrors['assignedToId'] }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editStatus">Statut</label>
+            <select 
+              id="editStatus"
+              [(ngModel)]="selectedTask.status" 
+              name="editStatus">
+              <option 
+                *ngFor="let status of TaskStatus | keyvalue" 
+                [value]="status.value">
+                {{ status.value }}
+              </option>
+            </select>
+            <div class="input-effect"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="editPriorite">Priorité</label>
+            <select 
+              id="editPriorite"
+              [(ngModel)]="selectedTask.priorite" 
+              name="editPriorite">
+              <option 
+                *ngFor="let priority of TaskPriority | keyvalue" 
+                [value]="priority.value">
+                {{ priority.value }}
+              </option>
+            </select>
+            <div class="input-effect"></div>
+          </div>
+        </div>
+
+        <!-- Labels input -->
+        <div class="form-group">
+          <label>Labels</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editLabelsInput" 
+            name="editLabels" 
+            placeholder="Tapez les labels séparés par des virgules (ex: urgent, frontend)">
+          <div class="input-effect"></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" (click)="closeEditModal()" class="cancel-btn">
+            Annuler
+          </button>
+          <button type="submit" class="submit-btn" [disabled]="submitting">
+            Enregistrer les modifications
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

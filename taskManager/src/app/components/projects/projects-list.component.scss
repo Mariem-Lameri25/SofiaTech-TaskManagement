@@ -1,0 +1,1068 @@
+// Ensure action buttons in the Actions column are aligned horizontally with spacing
+.action-buttons-group {
+  display: flex;
+  gap: 8px; // Space between buttons
+  align-items: center;
+}
+// =======================
+// STYLES POUR LA GESTION DES PROJETS
+// =======================
+
+// Container principal des projets
+.projects-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 1.5rem;
+  }
+
+  // Bouton d'ajout de projet
+  .btn-primary {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 1.5rem;
+
+    &:hover {
+      background-color: #ee768e;
+    }
+  }
+}
+
+// Section des filtres
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  input,
+  select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: #dc3545;
+      outline: none;
+    }
+  }
+
+  input[type="text"] {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  select {
+    min-width: 150px;
+  }
+}
+
+// Table des projets
+.projects-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  margin-bottom: 2rem;
+
+  thead {
+    background-color: #dc3545;
+    color: white;
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+    }
+  }
+
+  tbody tr {
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+
+    &:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border: none;
+      vertical-align: middle;
+      font-size: 0.9rem;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        font-weight: 600;
+        color: #343a40;
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+
+      // Liste des membres assignés
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+          padding: 0.2rem 0;
+          font-size: 0.85rem;
+          color: #6c757d;
+
+          &:not(:last-child) {
+            border-bottom: 1px solid #e9ecef;
+          }
+        }
+      }
+
+      // Boutons d'action
+      .btn {
+        padding: 0.3rem 0.8rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+        transition: all 0.2s;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        // Tasks button (info style)
+        &.btn-outline-info {
+          background-color: transparent;
+          color: #17a2b8;
+          border: 1px solid #17a2b8;
+          padding: 0.25rem 0.6rem;
+          
+          i {
+            font-size: 0.9rem;
+          }
+          
+          &:hover {
+            background-color: #17a2b8;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(23,162,184,0.3);
+          }
+        }
+
+        &.btn-outline-primary {
+          background-color: transparent;
+          color: #007bff;
+          border: 1px solid #007bff;
+
+          i {
+            margin-right: 0.3rem;
+          }
+
+          &:hover {
+            background-color: #007bff;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+          }
+        }
+
+        &.btn-danger {
+          background-color: #fefefe;
+          color: rgb(247, 17, 17);
+          border: 1px solid #f11515;
+          i {
+            margin-right: 0.3rem;
+          }
+
+          &:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(220,53,69,0.3);
+          }
+        }
+
+        &.btn-sm {
+          padding: 0.25rem 0.6rem;
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+}
+
+// Pagination
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+
+  .page-item {
+    list-style: none;
+
+    &.disabled .page-link {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &.active .page-link {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+
+    .page-link {
+      padding: 0.5rem 0.75rem;
+      background-color: white;
+      border: 1px solid #dee2e6;
+      color: #007bff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+
+      &:hover:not(.disabled) {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+      }
+
+      .fa {
+        font-size: 0.9rem;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+    }
+  }
+}
+
+// =======================
+// ENHANCED MODAL STYLES FOR PROJECTS (TASKS STYLE)
+// =======================
+
+// Modal Backdrop with blur effect
+.modal {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  backdrop-filter: blur(8px);
+  animation: backdropFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  @keyframes backdropFadeIn {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+    to {
+      opacity: 1;
+      backdrop-filter: blur(8px);
+    }
+  }
+}
+
+// Enhanced Modal Container (Tasks Style)
+.modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 95%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-40px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  // Modal Header (Tasks Style)
+  .modal-header {
+    background: linear-gradient(135deg, #ff5162, #f8b6af);
+    color: white;
+    padding: 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+
+      &::before {
+        content: '📁';
+        opacity: 0.8;
+        font-size: 1.2rem;
+      }
+    }
+
+    // Close button in header
+    .close {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1.2rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  // Modal Body - Scrollable with all content including footer
+  .modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(90vh - 120px); // Reduced height to account for smaller footer
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+      
+      &:hover {
+        background: #a1a1a1;
+      }
+    }
+
+    // Form groups
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+
+      label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          color: #dc3545;
+          font-size: 0.9rem;
+        }
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #ffffff;
+        
+        &:focus {
+          border-color: #dc3545;
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+          transform: translateY(-1px);
+        }
+
+        &::placeholder {
+          color: #9ca3af;
+          font-style: italic;
+        }
+
+        &:hover:not(:focus) {
+          border-color: #d1d5db;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    // Team Members Specific Styles
+    .team-members-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.5rem;
+
+      .team-member-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        animation: memberSlideIn 0.3s ease;
+
+        @keyframes memberSlideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .member-inputs {
+          display: flex;
+          flex: 1;
+          gap: 1rem;
+
+          select {
+            flex: 1;
+            min-width: 0;
+          }
+
+          @media (max-width: 768px) {
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+        }
+
+        .remove-member-btn {
+          background: #dc3545;
+          color: white;
+          border: none;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+
+          &:hover {
+            background: #c82333;
+            transform: scale(1.1);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
+
+          i {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .add-member-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      align-self: flex-start;
+
+      &:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      i {
+        font-size: 0.9rem;
+      }
+    }
+
+    // Form Actions inside scrollable area
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 0.5rem;
+
+      .btn-cancel,
+      .btn-create {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        min-width: 90px;
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none !important;
+
+          &:hover {
+            transform: none !important;
+            box-shadow: none !important;
+          }
+        }
+
+        i {
+          font-size: 0.8rem;
+        }
+      }
+
+      .btn-cancel {
+        background: #6b7280;
+        color: white;
+
+        &:hover {
+          background: #4b5563;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 6px rgba(107, 114, 128, 0.2);
+        }
+      }
+
+      .btn-create {
+        background: linear-gradient(135deg, #f23043, #f85f5f);
+        color: white;
+
+        &:hover {
+          background: linear-gradient(135deg, #f52237, #f52237);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+      }
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        
+        .btn-cancel,
+        .btn-create {
+          width: 100%;
+          padding: 0.6rem 1rem;
+        }
+      }
+    }
+  }
+
+  // Modal Footer (Tasks Style) - Compact and Scrollable
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+
+    .btn-cancel,
+    .btn-create {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-width: 90px;
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+
+        &:hover {
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    .btn-cancel {
+      background: #6b7280;
+      color: white;
+
+      &:hover {
+        background: #4b5563;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(107, 114, 128, 0.2);
+      }
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+
+    .btn-create {
+      background: linear-gradient(135deg, #f23043, #f85f5f);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(135deg, #f23043, #f85f5f);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+      }
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  // Old form structure support (if still needed)
+  form:not(.modal-body) {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(90vh - 180px);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    // Form Actions (old structure)
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+      margin-top: auto;
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &.cancel-btn {
+          background: #6b7280;
+          color: white;
+
+          &:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+          }
+        }
+
+        &.submit-btn {
+          background: linear-gradient(135deg, #f23043, #f85f5f);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(135deg, #f23043, #f85f5f);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Legacy close button (outside header)
+.modal-content .close:not(.modal-header .close) {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #6b7280;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+  z-index: 10;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+  }
+}
+
+// Loading state
+.modal-loading {
+  .modal-content .modal-body,
+  .modal-content form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #dc3545;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    }
+  }
+}
+
+// =======================
+// RESPONSIVE DESIGN
+// =======================
+
+@media (max-width: 768px) {
+  .projects-container {
+    padding: 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    input[type="text"] {
+      min-width: auto;
+    }
+  }
+
+  .projects-table {
+    font-size: 0.8rem;
+
+    thead th,
+    tbody td {
+      padding: 0.5rem;
+    }
+
+    // Masquer certaines colonnes sur mobile
+    th:nth-child(4),
+    th:nth-child(5),
+    th:nth-child(7),
+    td:nth-child(4),
+    td:nth-child(5),
+    td:nth-child(7) {
+      display: none;
+    }
+  }
+
+  .modal-content {
+    width: 98%;
+    max-width: none;
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+
+    .modal-header {
+      padding: 1rem 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+      }
+
+      .close {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+
+      .team-members-container {
+        .team-member-row {
+          padding: 0.75rem;
+          
+          .member-inputs {
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+        }
+      }
+    }
+
+    .modal-footer {
+      flex-direction: column;
+      padding: 0.75rem 1.5rem;
+
+      .btn-cancel,
+      .btn-create {
+        width: 100%;
+        padding: 0.6rem 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-table {
+    // Sur très petits écrans, format de carte
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      display: block;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+
+      td {
+        display: block;
+        text-align: left;
+        padding: 0.3rem 0;
+        border: none;
+
+        &:before {
+          content: attr(data-label) ": ";
+          font-weight: 600;
+          color: #495057;
+        }
+
+        &:first-child:before {
+          content: "Nom: ";
+        }
+      }
+    }
+  }
+}
+
+// =======================
+// STYLES ADDITIONNELS
+// =======================
+
+.user-header {
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+}
+
+.user-avatar-sm, .user-avatar-xs {
+  border-radius: 50%;
+  background: #6c757d;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.user-avatar-sm {
+  width: 24px;
+  height: 24px;
+}
+
+.user-avatar-xs {
+  width: 20px;
+  height: 20px;
+}
+
+.role-badge {
+  font-size: 0.7em;
+  background: #e9ecef;
+  padding: 2px 4px;
+  border-radius: 2px;
+  margin-left: 4px;
+}
+
+.empty-state {
+  padding: 2rem;
+}
+
+.modal-lg {
+  max-width: 800px;
+}
+
+// Animation classes for dynamic content
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
